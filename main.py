@@ -65,15 +65,16 @@ def home():
     return render_template("index.html")
 
 
-# @app.route("/search", methods=["POST", "GET"])
-# def search():
-#     if request.method == "GET":
-#         t = time.time()
-#         q = request.args.get("q")
-#         res = search_motcle(q)
-#         return render_template(
-#             "res.html", res=res, n=len(res), tm=round(time.time() - t, 2)
-#         )
+@app.route("/searchCategory", methods=["POST", "GET"])
+def searchCategory():
+    if request.method == "GET":
+        t = time.time()
+        q = request.args.get("q")
+        sp = request.args.get("sp")
+        res = search_sp(q, sp)
+        return render_template(
+            "res.html", res=res, n=len(res), tm=round(time.time() - t, 2, query=q)
+        )
 
 
 @app.route("/search", methods=["POST", "GET"])
