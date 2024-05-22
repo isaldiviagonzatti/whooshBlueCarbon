@@ -10,22 +10,23 @@ import whoosh.highlight as highlight
 from whoosh.query import SpanNear
 import time
 import re
+from whoosh.query import And, Term
+from whoosh.qparser import OrGroup
 
 
 app = Flask(__name__)
 
 
-def search_motcle(mot, slop=10):
+def search_Near(words, slop=10):
     results_list = []
     ix = index.open_dir("indexWhoosh")
     with ix.searcher() as searcher:
         # Split the search query into individual words
-        words = mot.split()
+        words = words.split()
         print(words)
 
         # Create a SpanNear query with a specified slop (proximity)
         span_near_query = SpanNear.phrase("text", words, slop=slop)
-        print("Query Object:", span_near_query)
         res = searcher.search(span_near_query, limit=None)
         res.fragmenter = highlight.WholeFragmenter()
 
@@ -60,21 +61,58 @@ def search_motcle(mot, slop=10):
     return results_list
 
 
+def search_by_category(words, category, slop=10):
+    tab = []
+    ix = index.open_dir("indexWhoosh")
+
+    if words == "":
+        with ix.searcher() as searcher:
+            # query = QueryParser("keywordsmanual", ix.schema).parse(category)
+            query = MultifieldParser(
+                ["keywordsmanual"], ix.schema, group=OrGroup
+            ).parse(category)
+            res = searcher.search(query, limit=None)
+            for i in res:
+                tab.append(
+                    [
+                        i["title"],
+                        i["keywordsmanual"],
+                        i["text"],
+                        i["authors"],
+                        i["doi_link"],
+                        i["filename"],
+                    ]
+                )
+    else:
+        with ix.searcher() as searcher:
+            # query = QueryParser("text", ix.schema).parse(words)
+            span_near_query = SpanNear.phrase("text", words, slop=slop)
+            res = searcher.search(span_near_query, limit=None)
+            # res = searcher.search(query, limit=None)
+            res.fragmenter = highlight.WholeFragmenter()
+            for i in res:
+                if i["keywordsmanual"] == category:
+                    tab.append(
+                        [
+                            i["title"],
+                            i["keywordsmanual"],
+                            i.highlights("text", minscore=0),
+                            i["authors"],
+                            i["doi_link"],
+                            i["filename"],
+                        ]
+                    )
+    return tab
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-@app.route("/searchCategory", methods=["POST", "GET"])
+@app.route("/searchCategory")
 def searchCategory():
-    if request.method == "GET":
-        t = time.time()
-        q = request.args.get("q")
-        sp = request.args.get("sp")
-        res = search_sp(q, sp)
-        return render_template(
-            "res.html", res=res, n=len(res), tm=round(time.time() - t, 2, query=q)
-        )
+    return render_template("searchCategory.html")
 
 
 @app.route("/search", methods=["POST", "GET"])
@@ -82,9 +120,21 @@ def search():
     if request.method == "GET":
         t = time.time()
         q = request.args.get("q")
-        res = search_motcle(q)
+        res = search_Near(q)
         return render_template(
             "res.html", res=res, n=len(res), tm=round(time.time() - t, 2), query=q
+        )
+
+
+@app.route("/searchR2", methods=["POST", "GET"])
+def searchR2():
+    if request.method == "GET":
+        t = time.time()
+        q = request.args.get("q")
+        sp = request.args.get("sp")
+        res = search_by_category(q, sp)
+        return render_template(
+            "res.html", res=res, n=len(res), tm=round(time.time() - t, 2)
         )
 
 

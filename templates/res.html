@@ -9,11 +9,6 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <!-- <style>
-    .match {
-      color: red;
-    }
-  </style> -->
 
   <head>
     <meta charset="UTF-8">
@@ -51,7 +46,7 @@
   </head>
 
 
-  <title>Résultats pour "{{ query }}" - Les minutes du procès Nuremberg</title>
+  <title>Results for "{{ query }}" - Blue Carbon Search Engine</title>
 </head>
 
 <body>
@@ -59,9 +54,9 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href=".">Complete search</a>
-        <a class="nav-item nav-link" href="/category">Search by category</a>
-        <a class="nav-item nav-link" href="/keywords">Search by keyword</a>
+        <a class="nav-item nav-link" href=".">Near search</a>
+        <a class="nav-item nav-link" href="/searchCategory">Search by category</a>
+        <a class="nav-item nav-link" href="/searchKeyword">Search by keyword</a>
       </div>
     </div>
   </nav>
@@ -78,7 +73,6 @@
           <div class="card-body">
             <h5 class="card-title">{{ result.title }}</h5>
             <p><strong>Filename:</strong> {{ result.filename }}</p>
-            <!-- open link in new -->
             <p><strong>Link:</strong> <a href="{{ result.doi_link }}" target="_blank">{{ result.doi_link }}</a></p>
             <p><strong>Category:</strong> {{ result.keywordsmanual }}</p>
             <p><strong>Authors:</strong> {{ result.authors }}</p>

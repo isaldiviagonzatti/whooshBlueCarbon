@@ -27,51 +27,51 @@ def search_motcle(mot):
     return tab
 
 
-# def search_sp(mot, sp):
-#     tab = []
-#     ix = index.open_dir("indexWhoosh")
+def search_sp(mot, sp):
+    tab = []
+    ix = index.open_dir("indexWhoosh")
 
-#     if mot == "":
-#         with ix.searcher() as searcher:
-#             query = QueryParser("sp", ix.schema).parse(sp)
-#             res = searcher.search(query, limit=None)
-#             for i in res:
-#                 tab.append([i["title"], i["sp"], i["text"]])
-#     else:
-#         with ix.searcher() as searcher:
-#             # query = MultifieldParser(["sp","text"], schema=ix.schema).parse(sp+" "+mot)
-#             query = QueryParser("text", ix.schema).parse(mot)
-#             res = searcher.search(query, limit=None)
-#             res.fragmenter = highlight.WholeFragmenter()
-#             for i in res:
-#                 if i["sp"] == sp:
-#                     tab.append([i["title"], i["sp"], i.highlights("text", minscore=0)])
-#     return tab
+    if mot == "":
+        with ix.searcher() as searcher:
+            query = QueryParser("sp", ix.schema).parse(sp)
+            res = searcher.search(query, limit=None)
+            for i in res:
+                tab.append([i["title"], i["sp"], i["text"]])
+    else:
+        with ix.searcher() as searcher:
+            # query = MultifieldParser(["sp","text"], schema=ix.schema).parse(sp+" "+mot)
+            query = QueryParser("text", ix.schema).parse(mot)
+            res = searcher.search(query, limit=None)
+            res.fragmenter = highlight.WholeFragmenter()
+            for i in res:
+                if i["sp"] == sp:
+                    tab.append([i["title"], i["sp"], i.highlights("text", minscore=0)])
+    return tab
 
 
-# def search_spJ(mot, sp, journee):
-#     tab = []
-#     ix = index.open_dir("indexWhoosh")
+def search_spJ(mot, sp, journee):
+    tab = []
+    ix = index.open_dir("indexWhoosh")
 
-#     if mot == "":
-#         with ix.searcher() as searcher:
-#             query = QueryParser("sp", ix.schema).parse(sp)
-#             res = searcher.search(query, limit=None)
-#             for i in res:
-#                 # tab.append([i['title'],i['sp'],i['text']])
-#                 if i["title"] == journee:
-#                     tab.append([i["title"], i["sp"], i["text"]])
+    if mot == "":
+        with ix.searcher() as searcher:
+            query = QueryParser("sp", ix.schema).parse(sp)
+            res = searcher.search(query, limit=None)
+            for i in res:
+                # tab.append([i['title'],i['sp'],i['text']])
+                if i["title"] == journee:
+                    tab.append([i["title"], i["sp"], i["text"]])
 
-#     else:
-#         with ix.searcher() as searcher:
-#             # query = MultifieldParser(["sp","text"], schema=ix.schema).parse(sp+" "+mot)
-#             query = QueryParser("text", ix.schema).parse(mot)
-#             res = searcher.search(query, limit=None)
-#             res.fragmenter = highlight.WholeFragmenter()
-#             for i in res:
-#                 if i["sp"] == sp and i["title"] == journee:
-#                     tab.append([i["title"], i["sp"], i.highlights("text", minscore=0)])
-#     return tab
+    else:
+        with ix.searcher() as searcher:
+            # query = MultifieldParser(["sp","text"], schema=ix.schema).parse(sp+" "+mot)
+            query = QueryParser("text", ix.schema).parse(mot)
+            res = searcher.search(query, limit=None)
+            res.fragmenter = highlight.WholeFragmenter()
+            for i in res:
+                if i["sp"] == sp and i["title"] == journee:
+                    tab.append([i["title"], i["sp"], i.highlights("text", minscore=0)])
+    return tab
 
 
 @app.route("/")
@@ -100,16 +100,16 @@ def search():
         )
 
 
-# @app.route("/searchR2", methods=["POST", "GET"])
-# def searchR2():
-#     if request.method == "GET":
-#         t = time.time()
-#         q = request.args.get("q")
-#         sp = request.args.get("sp")
-#         res = search_sp(q, sp)
-#         return render_template(
-#             "res.html", res=res, n=len(res), tm=round(time.time() - t, 2)
-#         )
+@app.route("/searchR2", methods=["POST", "GET"])
+def searchR2():
+    if request.method == "GET":
+        t = time.time()
+        q = request.args.get("q")
+        sp = request.args.get("sp")
+        res = search_sp(q, sp)
+        return render_template(
+            "res.html", res=res, n=len(res), tm=round(time.time() - t, 2)
+        )
 
 
 # @app.route("/searchR3", methods=["POST", "GET"])
