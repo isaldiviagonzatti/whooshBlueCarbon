@@ -10,7 +10,7 @@ import whoosh.highlight as highlight
 from whoosh.query import SpanNear
 import time
 import re
-from whoosh.query import And, Term, Or
+from whoosh.query import And, Term
 from whoosh.qparser import OrGroup
 
 
@@ -23,6 +23,7 @@ def search_Near(words, slop=10):
     with ix.searcher() as searcher:
         # Split the search query into individual words
         words = words.split()
+        print(words)
 
         # Create a SpanNear query with a specified slop (proximity)
         span_near_query = SpanNear.phrase("text", words, slop=slop)
@@ -60,44 +61,48 @@ def search_Near(words, slop=10):
     return results_list
 
 
-# def search_by_category(text_query, categories):
-#     results_list = []
-#     ix = index.open_dir("indexWhoosh")
+def search_by_category(words, category, slop=10):
+    tab = []
+    ix = index.open_dir("indexWhoosh")
 
-#     with ix.searcher() as searcher:
-#         # Create the category filter query
-#         if categories:
-#             if len(categories) > 1:
-#                 cat_q = Or([Term("keywordsmanual", x) for x in categories])
-#             else:
-#                 cat_q = Term("keywordsmanual", next(iter(categories)))
-
-#         else:
-#             cat_q = None
-
-#         # Create the text query
-#         parser = MultifieldParser(["text"], ix.schema, group=OrGroup)
-#         query = parser.parse(text_query)
-
-#         if cat_q is None:
-#             # No category filter, just search the text query
-#             results = searcher.search(query, limit=None)
-#             results.fragmenter = highlight.WholeFragmenter()
-#         else:
-#             # Use the category filter
-#             results = searcher.search(And([cat_q, query]), limit=None)
-#             results.fragmenter = highlight.WholeFragmenter()
-#         for hit in results:
-#             results_list.append(
-#                 {
-#                     "title": hit["title"],
-#                     "keywordsmanual": hit["keywordsmanual"],
-#                     "filename": hit["filename"],
-#                     "authors": hit["authors"],
-#                     "doi_link": hit["doi_link"],
-#                 }
-#             )
-#     return results_list
+    if words == "":
+        with ix.searcher() as searcher:
+            # query = QueryParser("keywordsmanual", ix.schema).parse(category)
+            query = MultifieldParser(
+                ["keywordsmanual"], ix.schema, group=OrGroup
+            ).parse(category)
+            res = searcher.search(query, limit=None)
+            for i in res:
+                tab.append(
+                    [
+                        i["title"],
+                        i["keywordsmanual"],
+                        i["text"],
+                        i["authors"],
+                        i["doi_link"],
+                        i["filename"],
+                    ]
+                )
+    else:
+        with ix.searcher() as searcher:
+            # query = QueryParser("text", ix.schema).parse(words)
+            span_near_query = SpanNear.phrase("text", words, slop=slop)
+            res = searcher.search(span_near_query, limit=None)
+            # res = searcher.search(query, limit=None)
+            res.fragmenter = highlight.WholeFragmenter()
+            for i in res:
+                if i["keywordsmanual"] == category:
+                    tab.append(
+                        [
+                            i["title"],
+                            i["keywordsmanual"],
+                            i.highlights("text", minscore=0),
+                            i["authors"],
+                            i["doi_link"],
+                            i["filename"],
+                        ]
+                    )
+    return tab
 
 
 @app.route("/")
@@ -126,8 +131,8 @@ def searchR2():
     if request.method == "GET":
         t = time.time()
         q = request.args.get("q")
-        category = request.args.get("categories")
-        res = search_by_category(q, category)
+        sp = request.args.get("sp")
+        res = search_by_category(q, sp)
         return render_template(
             "res.html", res=res, n=len(res), tm=round(time.time() - t, 2)
         )

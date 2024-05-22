@@ -10,53 +10,54 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
-    <style>
-      /* Define styles for highlighted words */
-      .match-0 {
-        background-color: yellow;
-        color: inherit;
-      }
-
-      .match-1 {
-        background-color: rgb(94, 94, 210);
-        color: inherit;
-      }
-
-      .match-2 {
-        background-color: rgb(26, 199, 63);
-        color: inherit;
-      }
-
-      .match-3 {
-        background-color: orange;
-        color: inherit;
-      }
-
-      .match-4 {
-        background-color: purple;
-        color: inherit;
-      }
-
-      /* Add more styles for additional colors as needed */
-    </style>
-  </head>
-
-
   <title>Results for "{{ query }}" - Blue Carbon Search Engine</title>
+  <style>
+    /* Define styles for highlighted words */
+    .match-0 {
+      background-color: yellow;
+      color: inherit;
+    }
+
+    .match-1 {
+      background-color: rgb(94, 94, 210);
+      color: inherit;
+    }
+
+    .match-2 {
+      background-color: rgb(26, 199, 63);
+      color: inherit;
+    }
+
+    .match-3 {
+      background-color: orange;
+      color: inherit;
+    }
+
+    .match-4 {
+      background-color: purple;
+      color: inherit;
+    }
+
+    .btn-custom {
+      background-color: #174d7a;
+      /* Custom color */
+      color: white;
+      /* Text color */
+      /* size */
+      padding: 5px 10px;
+    }
+
+    /* Add more styles for additional colors as needed */
+  </style>
 </head>
 
 <body>
-
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href=".">Near search</a>
-        <a class="nav-item nav-link" href="/searchCategory">Search by category</a>
-        <a class="nav-item nav-link" href="/searchKeyword">Search by keyword</a>
+        <!-- <a class="nav-item nav-link" href="/searchCategory">Search by category</a>
+        <a class="nav-item nav-link" href="/searchKeyword">Search by keyword</a> -->
       </div>
     </div>
   </nav>
@@ -72,11 +73,17 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ result.title }}</h5>
-            <p><strong>Filename:</strong> {{ result.filename }}</p>
-            <p><strong>Link:</strong> <a href="{{ result.doi_link }}" target="_blank">{{ result.doi_link }}</a></p>
-            <p><strong>Category:</strong> {{ result.keywordsmanual }}</p>
-            <p><strong>Authors:</strong> {{ result.authors }}</p>
-            <p><strong>Text:</strong> {{ result.text | safe }}</p>
+            <button class="btn btn-custom" type="button" data-toggle="collapse" data-target="#collapse{{ loop.index }}"
+              aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+              See Details
+            </button>
+            <div class="collapse" id="collapse{{ loop.index }}">
+              <p><strong>Filename:</strong> {{ result.filename }}</p>
+              <p><strong>Link:</strong> <a href="{{ result.doi_link }}" target="_blank">{{ result.doi_link }}</a></p>
+              <p><strong>Category:</strong> {{ result.keywordsmanual }}</p>
+              <p><strong>Authors:</strong> {{ result.authors }}</p>
+              <p><strong>Text:</strong> {{ result.text | safe }}</p>
+            </div>
           </div>
         </div>
       </div>
