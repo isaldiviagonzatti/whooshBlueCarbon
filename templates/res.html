@@ -1,66 +1,107 @@
 <!doctype html>
 <html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- <style>
+    .match {
+      color: red;
+    }
+  </style> -->
+
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
     <style>
-      .match{ color: red; }
+      /* Define styles for highlighted words */
+      .match-0 {
+        background-color: yellow;
+        color: inherit;
+      }
+
+      .match-1 {
+        background-color: rgb(94, 94, 210);
+        color: inherit;
+      }
+
+      .match-2 {
+        background-color: rgb(26, 199, 63);
+        color: inherit;
+      }
+
+      .match-3 {
+        background-color: orange;
+        color: inherit;
+      }
+
+      .match-4 {
+        background-color: purple;
+        color: inherit;
+      }
+
+      /* Add more styles for additional colors as needed */
     </style>
-
-  <title>Résultats - Les minutes du procès Nuremberg</title>
   </head>
-  <body>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-item nav-link" href=".">Recherche par mots clés</a>
-          <a class="nav-item nav-link" href="/speaker">Recherche par intervenant</a>
-          <a class="nav-item nav-link" href="/spJournee">Recherche par intervenant/journée</a>
-        </div>
-      </div>
-    </nav>
-
-  
-    
-<br>
 
 
-<div class="container">
+  <title>Résultats pour "{{ query }}" - Les minutes du procès Nuremberg</title>
+</head>
 
+<body>
 
-<div class="col">
-<h3 style="text-align: center;">{{ n }} résultats trouvés en {{ tm }} secondes</h3>
-<br>
-{% for i in res %}
-   <div class="col-sm-12">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{ i[0] }} </h5>
-        <p style="color:royalblue;">{{ i[1] }} : </p>
-        <p>{{ i[2]|safe }}</p>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href=".">Complete search</a>
+        <a class="nav-item nav-link" href="/category">Search by category</a>
+        <a class="nav-item nav-link" href="/keywords">Search by keyword</a>
       </div>
     </div>
-  </div>
+  </nav>
 
   <br>
 
-  {% endfor %}
+  <div class="container">
+    <div class="col">
+      <h3 style="text-align: center;">{{ n }} results in {{ tm }} seconds for "{{ query }}"</h3>
+      <br>
+      {% for result in res %}
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ result.title }}</h5>
+            <p><strong>Filename:</strong> {{ result.filename }}</p>
+            <!-- open link in new -->
+            <p><strong>Link:</strong> <a href="{{ result.doi_link }}" target="_blank">{{ result.doi_link }}</a></p>
+            <p><strong>Category:</strong> {{ result.keywordsmanual }}</p>
+            <p><strong>Authors:</strong> {{ result.authors }}</p>
+            <p><strong>Text:</strong> {{ result.text | safe }}</p>
+          </div>
+        </div>
+      </div>
+      <br>
+      {% endfor %}
+    </div>
+  </div>
 
-</div>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9uB5T9O1iV6iGtg5EPEVXq4lrQg8A6PEPByG9"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
 
-
-</div>
-
-
-
-
-
-
-
-  </body>
 </html>
