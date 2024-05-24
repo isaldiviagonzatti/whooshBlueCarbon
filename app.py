@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 def search_Near(words, slop=10):
     results_list = []
-    ix = index.open_dir("indexWhoosh")
+    ix = index.open_dir("/home/isaldiviagonzatti/whooshBlueCarbon/indexWhoosh")
     with ix.searcher() as searcher:
         # Split the search query into individual words
         words = words.split()
