@@ -10,22 +10,48 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-  <title>Blue Carbon Search Engine</title>
+  <title>Blue Carbon</title>
+
+  <style>
+    .center-container {
+      max-width: 800px;
+      /* Adjust the max-width as needed */
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .center-container h1,
+    .center-container p {
+      text-align: left;
+    }
+  </style>
 </head>
 
 <body>
-
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href=".">Near Search</a>
-        <a class="nav-item nav-link" href="/searchCategory">Search by category</a>
+        <a class="nav-item nav-link" href="/searchSimple">Simple search</a>
         <!-- <a class="nav-item nav-link" href="/searchKeyword">Search by keyword</a> -->
       </div>
     </div>
   </nav>
 
+
+
+  <div class="center-container">
+    <h1 class="display-4">Blue Carbon Search Engine</h1>
+    <p class="lead">Simple search<br>
+      <small> Example: <i> mangrove AND seagrass AND (bra?il OR sri lanka) </i> <br>
+        This is simple search, it will return the documents that contain the keywords you enter. You can use boolean
+        operators like AND, OR, NOT, parentheses, and wildcards.
+      </small>
+
+    </p>
+
+  </div>
 
 
 
@@ -35,14 +61,9 @@
 
   <div class="container">
 
-    <form class="col" method="GET" action='/searchR3'>
+    <form class="col" method="GET" action='/searchR2'>
       <div class="form-group">
         <input type="text" class="form-control" placeholder="Keyword" name="q">
-        <br>
-        <select class="form-select" aria-label="Default select example" name="category">
-          <option value='Test1'>Test 1</option>
-          <option value='test 2'>Test 2</option>
-        </select>
       </div>
       <button type="submit" class="btn btn-primary"
         style="background-color:#403ba8; border-color: #403ba8;">Search</button>

@@ -25,7 +25,7 @@ def search_Near(words, slop=10):
         words = words.split()
 
         # Create a SpanNear query with a specified slop (proximity)
-        span_near_query = SpanNear.phrase("text", words, slop=slop)
+        span_near_query = SpanNear.phrase("text", words, slop=slop, ordered=False)
         res = searcher.search(span_near_query, limit=None)
         res.fragmenter = highlight.WholeFragmenter()
 
@@ -55,6 +55,45 @@ def search_Near(words, slop=10):
                     "authors": hit["authors"],
                     "doi_link": hit["doi_link"],
                     "text": highlighted_text,
+                }
+            )
+    return results_list
+
+
+def simpleS(words):
+    results_list = []
+    ix = index.open_dir("indexWhoosh")
+    with ix.searcher() as searcher:
+        # Use a MultifieldParser to search across multiple fields
+        query = MultifieldParser(
+            [
+                "title",
+                "keywordsmanual",
+                "filename",
+                # "keywords",
+                # "category",
+                "authors",
+                # "abstract",
+                "doi_link",
+                "text",
+            ],
+            schema=ix.schema,
+        ).parse(words)
+        res = searcher.search(query, limit=None)
+        # Use ContextFragmenter to show only the text around the keywords
+        # res.fragmenter = highlight.ContextFragmenter(
+        #     surround=20
+        # )
+        res.fragmenter = highlight.WholeFragmenter()
+        for hit in res:
+            results_list.append(
+                {
+                    "title": hit["title"],
+                    "keywordsmanual": hit["keywordsmanual"],
+                    "filename": hit["filename"],
+                    "authors": hit["authors"],
+                    "doi_link": hit["doi_link"],
+                    "text": hit.highlights("text", minscore=0),
                 }
             )
     return results_list
@@ -105,9 +144,17 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/searchCategory")
-def searchCategory():
-    return render_template("searchCategory.html")
+@app.route("/searchSimple")
+def searchSimple():
+    return render_template("searchSimple.html")
+
+
+# @app.route("/searchCategory")
+# def searchCategory():
+#     return render_template("searchCategory.html")
+
+
+###############################################################
 
 
 @app.route("/search", methods=["POST", "GET"])
@@ -122,16 +169,26 @@ def search():
 
 
 @app.route("/searchR2", methods=["POST", "GET"])
-def searchR2():
+def simpleSearch():
     if request.method == "GET":
         t = time.time()
         q = request.args.get("q")
-        category = request.args.get("categories")
-        res = search_by_category(q, category)
+        res = simpleS(q)
         return render_template(
-            "res.html", res=res, n=len(res), tm=round(time.time() - t, 2)
+            "res.html", res=res, n=len(res), tm=round(time.time() - t, 2), query=q
         )
 
+
+# @app.route("/searchR3", methods=["POST", "GET"])
+# def searchR2():
+#     if request.method == "GET":
+#         t = time.time()
+#         q = request.args.get("q")
+#         category = request.args.get("categories")
+#         res = search_by_category(q, category)
+#         return render_template(
+#             "res.html", res=res, n=len(res), tm=round(time.time() - t, 2)
+#         )
 
 if __name__ == "__main__":
     app.run(debug=True)
