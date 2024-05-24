@@ -62,7 +62,7 @@ def search_Near(words, slop=10):
 
 def simpleS(words):
     results_list = []
-    ix = index.open_dir("indexWhoosh")
+    ix = index.open_dir("/home/isaldiviagonzatti/whooshBlueCarbon/indexWhoosh")
     with ix.searcher() as searcher:
         # Use a MultifieldParser to search across multiple fields
         query = MultifieldParser(
