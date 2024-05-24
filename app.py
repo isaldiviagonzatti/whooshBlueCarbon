@@ -1,6 +1,5 @@
 import json
 from flask import Flask, render_template, redirect, url_for, request, Response
-import requests
 from whoosh.index import create_in
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
@@ -19,10 +18,12 @@ app = Flask(__name__)
 
 def search_Near(words, slop=10):
     results_list = []
+    # ix = index.open_dir("indexWhoosh")
     ix = index.open_dir("/home/isaldiviagonzatti/whooshBlueCarbon/indexWhoosh")
     with ix.searcher() as searcher:
         # Split the search query into individual words
         words = words.split()
+        words = [word.lower() for word in words]
 
         # Create a SpanNear query with a specified slop (proximity)
         span_near_query = SpanNear.phrase("text", words, slop=slop, ordered=False)
@@ -62,6 +63,7 @@ def search_Near(words, slop=10):
 
 def simpleS(words):
     results_list = []
+    # ix = index.open_dir("indexWhoosh")
     ix = index.open_dir("/home/isaldiviagonzatti/whooshBlueCarbon/indexWhoosh")
     with ix.searcher() as searcher:
         # Use a MultifieldParser to search across multiple fields
