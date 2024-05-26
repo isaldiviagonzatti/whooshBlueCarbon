@@ -47,6 +47,10 @@ def search_Near(words, slop=10):
                     word.title(),
                     f'<span class="match-{i % len(colors)}">{word.title()}</span>',
                 )
+                highlighted_text = highlighted_text.replace(
+                    word.upper(),
+                    f'<span class="match-{i % len(colors)}">{word.upper()}</span>',
+                )
 
             results_list.append(
                 {
