@@ -54,7 +54,7 @@ def search_Near(words, slop=10):
                     "filename": hit["filename"],
                     "authors": hit["authors"],
                     "doi_link": hit["doi_link"],
-                    "text": highlighted_text,
+                    "text": highlighted_text.replace("\n", "<br> <br>"),
                 }
             )
     return results_list
